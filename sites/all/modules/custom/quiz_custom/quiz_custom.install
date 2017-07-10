@@ -1,0 +1,39 @@
+<?php
+
+function quiz_custom_update_7002(){
+  $schema = array(
+    'description' => 'The base table for anonymous user',
+    'fields' => array(
+    	'id' => array(
+    		'type' => 'serial',
+    		'unsigned' => TRUE,
+    		'not null' => TRUE,
+    		),
+    	'name' => array(
+    		'type' => 'varchar',
+       'length' => 255,
+       'not null' => TRUE, 
+    		),
+
+
+    	'email' => array(
+    		'type' => 'varchar',
+       'length' => 255,
+       'not null' => TRUE,       
+
+    		),
+        'quiz_id' => array(
+              'type' => 'int',
+       'unsigned' => TRUE,
+       'default' => 0,
+       
+    	   ),
+        ),
+    'primary key' => array('id'),
+  	);
+
+  if(!db_table_exists('anonymous_user')) {
+    db_create_table('anonymous_user', $schema);
+  }
+    
+}

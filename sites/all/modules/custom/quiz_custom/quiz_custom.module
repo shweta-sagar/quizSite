@@ -1,0 +1,99 @@
+<?php
+
+function quiz_custom_form_alter(&$form, $form_state, $form_id) {
+
+  // print_r("Form id => ".$form_id."<br>");
+  switch($form_id) {
+    case 'quiz_question_answering_form':
+      $form['#submit'][] = 'quiz_redirect_func';
+    break;
+
+    // case 'add_anonymous_details_form':
+    //   // code...
+    // break
+  }
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function quiz_custom_menu() {
+  
+  $items['anonymous-user/%'] = array(
+    'title' => 'Add User',
+    'description' => 'To add an anonymous user',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('add_anonymous_details_form', 1),
+    'access callback' => TRUE,
+    // 'access arguments' => array(''),  
+  );
+  return $items;
+}
+
+function add_anonymous_details_form($form, &$form_state, $arg) {
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+    '#default_value' => '',
+    );
+
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#default_value' =>'',
+    );
+
+  $form['quiz_id'] = array(
+    '#type' =>'value',
+    '#title' =>t('quiz-id'),
+    '#default_value' =>$arg,
+    );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#title' => t('Submit'),    
+    );
+
+  return $form;
+}
+
+function add_anonymous_details_form_submit(&$form, &$form_state) {
+  db_insert('anonymous_user')
+    ->fields(array(
+      'name' => $form_state['values']['name'],
+      'email' => $form_state['values']['email'] ,
+      'quiz_id' => $form_state['values']['quiz_id'] ,
+      ))
+    ->execute();
+    drupal_set_message('Data saved successfully');
+}
+
+// function add_anonymous_details_form_validate($form, $form_state) {
+  
+// }
+
+function quiz_redirect_func($form, &$form_state) {
+  // print_r('<pre>');
+  // print_r($form_state);
+  // die();
+  if ($form_state['buttons'][0]['#value'] == 'Finish') {
+    drupal_goto('anonymous-user/' . $form_state['complete form']['#quiz_result']->result_id);
+  }
+
+  // drupal_goto('anonymous-user/' . $form_state['quiz_question_answering_form']);
+}
+
+
+ function quiz_custom_views_query_alter($view, &$query ) {
+  print_r('<pre>');
+  print_r($query);
+  die();
+  // if($view->name == 'quiz_users_results') {
+  //   $query->users_quiz_node_results['fields']['users_quiz_node_results_mail'] = $email;
+  // }
+
+
+}
+

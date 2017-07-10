@@ -1,0 +1,5 @@
+name = custom_quiz
+description = 'This module help to alter user email'
+package = quiz-custom-code
+version = 7.1.0
+core = 7.x
