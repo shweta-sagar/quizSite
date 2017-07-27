@@ -1,0 +1,33 @@
+<?php
+// implements hook_schema
+function test_module_schema() {
+  $schema['sample_table'] = array(
+    'description' = 'The base table for sample data',
+    'fields' = array(
+        'id' = array(
+          'type' = 'serial',
+          'not null' = TRUE,
+          'unsigned' = TRUE,
+          ),
+        'name' = array(
+          'type' = 'varchar',
+          'not null' = TRUE,
+          'default' = '',
+          ),
+        'age' = array(
+          'type' = 'int',
+          'not null' = TRUE,
+          'unsigned' = TRUE,
+          ),
+        'title' array(
+          'type' = 'varchar',
+          'not null' = TRUE,
+          'default' = '',
+          ),
+      ),
+    'primary key' = array('id'),
+
+    );
+  return $schema;
+}
+

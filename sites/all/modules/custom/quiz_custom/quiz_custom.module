@@ -67,6 +67,11 @@ function add_anonymous_details_form_submit(&$form, &$form_state) {
       'quiz_id' => $form_state['values']['quiz_id'] ,
       ))
     ->execute();
+    // $result = db_select('anonymous_user', 'c')
+    // ->fields('c')
+    // ->execute()
+    // ->fetchAll();
+    // print_r($result);
     drupal_set_message('Data saved successfully');
 }
 
@@ -86,14 +91,26 @@ function quiz_redirect_func($form, &$form_state) {
 }
 
 
- function quiz_custom_views_query_alter($view, &$query ) {
-  print_r('<pre>');
-  print_r($query);
-  die();
-  // if($view->name == 'quiz_users_results') {
-  //   $query->users_quiz_node_results['fields']['users_quiz_node_results_mail'] = $email;
-  // }
-
-
+function quiz_custom_views_pre_render(&$view) {
+  // print_r($view); print_r($view->name); print_r($view->result); to see field values
+  // die();
+  if($view->name == 'quiz_user_results') {
+    $results = $view->result;
+    foreach ($results as $view_value) {
+      $em = get_email_by_rid($view_value->result_id);
+    }
+    if(empty(($em))) {
+      continue;
+    }
+    else
+      $view_value->users_quiz_node_results_mail = $em;
+  } 
 }
-
+function get_email_by_rid($result_id) {
+  $query = db_select('anonymous_user','a')
+    ->fields('a',array('email'))
+    ->condition('a.quiz_id',$result_id);
+  $result = $query->execute()->fetchField();
+  return $result; 
+}
+                      
